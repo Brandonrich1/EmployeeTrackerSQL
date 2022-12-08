@@ -1,5 +1,14 @@
 const inquirer = require('inquirer');
 const prompt = inquirer.createPromptModule();
+const cTable = require("console.table")
+
+let connection = mysql.createConnection({
+    host: "localhost",
+    port: 3001,
+    user:"root",
+    password: "Branndd!1",
+    database: "employees_db"
+})
 
 prompt({
     name:"doWhat",
