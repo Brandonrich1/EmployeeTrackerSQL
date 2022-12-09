@@ -1,48 +1,65 @@
 const inquirer = require('inquirer');
 const prompt = inquirer.createPromptModule();
 const cTable = require("console.table")
+const mysql = require("mysql2");
 
 let connection = mysql.createConnection({
     host: "localhost",
-    port: 3001,
+    port: 3306,
     user:"root",
     password: "Branndd!1",
-    database: "employees_db"
-})
+    database: "employee_db"
+});
 
-prompt({
-    name:"doWhat",
-    type: "list",
-    message: "What are you trying to do?",
-    choices: ["View All Employees", "Add Employee", "Update Employee Role", "Add Role", "View all Roles", "View All Departments", "Add Department", "Quit"]
-}).then((answer) => {
-switch(answer.doWhat) {
-    case "View All Employees": 
-        console.log("View all Employees")
-        break;
-    case "View All Employees": 
-        console.log("Add Employee")
-        break;    
-    case "Add Employee": 
-        console.log("Add Employee")
-        break;    
-    case "Update Employee Role": 
-        console.log("Update Employee Role")
-        break;
-    case "Add Role": 
-        console.log("Add Role")
-        break;
-    case "View all Roles" :
-        console.log("View all Roles")
-        break;
-    case "View All Departments": 
-        console.log("View All Departments")
-        break;
-    case "Add Department": 
-        console.log("Add Department")
-        break;
-    default: 
-        console.log("Quitting");
-        break;
+connection.connect(function(err){
+    if(err)throw err;
+    console.log("connected as id" + connection.threadId);
+    startPrompting();
+});
+
+//app starting prompt
+function startPrompting() {
+    inquirer.prompt({
+        name: "action",
+        type: "list",
+        message: "What would you like to do?",
+        choices: ["Add Department", "Add Role", "Add Employee", "View Departments", "View Roles", "View Employees", "Update Employee Role", "Delete Department", "Delete Role", "Delete Employee","EXIT"]
+    }).then(function (answer) {
+        console.log("You selected: " + answer.action);
+//switch cases for functions to be called later
+        switch (answer.action) {
+            case "Add Department":
+                addDepartment();
+                break;
+            case "Add Role":
+                addRole();
+                break;
+            case "Add Employee":
+                addEmployee();
+                break;
+            case "View Departments":
+                viewDepartments();
+                break;
+            case "View Roles":
+                viewRoles();
+                break;
+            case "View Employees":
+                viewEmployees();
+                break;
+            case "Update Employee Role":
+                updateEmployeeRole();
+                break;
+            case "Delete Department":
+                deleteDepartment();
+                break;
+            case "Delete Role":
+                deleteRole();
+                break;
+            case "Delete Employee":
+                deleteEmployee();
+                break;
+            default:
+                exit();
+        }
+    });
 }
-})
